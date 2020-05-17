@@ -73,9 +73,40 @@ class App extends Component {
     super();
     this.state = {
       input: '',
-      imageUrl: ''
+      imageUrl: '',
+      boxes: []
     };
   };
+
+  /* function that calculates the location of the face */
+  calculateFaceLocations = (data) => {
+    const regionsDetected = data.outputs[0].data.regions;
+    const image = document.getElementById('inputimage');
+    const widthImage = Number(image.width);
+    const heightImage = Number(image.height);
+    return regionsDetected.map(region => {
+      const clarifaiFace = region.region_info.bounding_box;
+      return this.calculateFaceSingleLocation(clarifaiFace, widthImage, heightImage)
+    })
+    
+  }
+
+  calculateFaceSingleLocation = (clarifaiFace, widthImage, heightImage) => {
+    // calculate the offset
+    return {
+      leftCol: clarifaiFace.left_col * widthImage,
+      topRow: clarifaiFace.top_row * heightImage,
+      rightCol: widthImage - (clarifaiFace.right_col * widthImage),
+      bottomRow: heightImage - (clarifaiFace.bottom_row * heightImage)
+    }
+  }
+
+  /* function that saves the calculated offset in the state */
+  displayFaceBoxes = (boxes) => {
+    this.setState({
+      boxes
+    });
+  }
 
   /* define the input state handler */
   onInputChange = (event) => {
@@ -94,16 +125,10 @@ class App extends Component {
     doc: https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
     */
     
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input).then(
-      function(response) {
-        // do something with response
-        // response structure https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
-        console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
-      },
-      function(err) {
-        // there was an error
-      }
-    );
+    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      // response structure https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
+      .then(response => this.displayFaceBoxes(this.calculateFaceLocations(response)))
+      .catch(err => console.log(err));
   }
 
   render() {
@@ -116,7 +141,7 @@ class App extends Component {
       <Logo />
       <Rank />
       <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-      <FaceRecognition imageUrl={this.state.imageUrl} />
+      <FaceRecognition imageUrl={this.state.imageUrl} boxes={this.state.boxes} />
       </div>
     );
   }
