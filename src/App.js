@@ -92,7 +92,7 @@ class App extends Component {
       const clarifaiFace = region.region_info.bounding_box;
       return this.calculateFaceSingleLocation(clarifaiFace, widthImage, heightImage)
     })
-    
+
   }
 
   calculateFaceSingleLocation = (clarifaiFace, widthImage, heightImage) => {
@@ -128,7 +128,7 @@ class App extends Component {
     /*
     doc: https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
     */
-    
+
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
       // response structure https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
       .then(response => this.displayFaceBoxes(this.calculateFaceLocations(response)))
@@ -171,13 +171,13 @@ class App extends Component {
               <Logo />
               <Rank />
               <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-              <FaceRecognition imageUrl={imageUrl} boxes={boxes} />
+              {imageUrl && <FaceRecognition imageUrl={imageUrl} boxes={boxes} />}
             </div>
           ) : (
-            route === 'signin' 
-            ? <Signin onRouteChange={this.onRouteChange} /> 
-            : <Register onRouteChange={this.onRouteChange} /> 
-          ) 
+            route === 'signin'
+            ? <Signin onRouteChange={this.onRouteChange} />
+            : <Register onRouteChange={this.onRouteChange} />
+          )
         }
       </div>
     );
