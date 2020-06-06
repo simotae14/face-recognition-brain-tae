@@ -78,7 +78,14 @@ class App extends Component {
       imageUrl: '',
       boxes: [],
       route: 'signin',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     };
   };
 
@@ -158,6 +165,20 @@ class App extends Component {
     });
   }
 
+  // handler to update the user when logged in
+  loadUser = data => {
+    
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined        
+      }
+    })
+  }
+
   render() {
     const {
       boxes,
@@ -176,14 +197,14 @@ class App extends Component {
           (
             <div>
               <Logo />
-              <Rank />
+              <Rank name={this.state.user.name} entries={this.state.user.entries} />
               <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
               {imageUrl && <FaceRecognition imageUrl={imageUrl} boxes={boxes} />}
             </div>
           ) : (
             route === 'signin'
-            ? <Signin onRouteChange={this.onRouteChange} />
-            : <Register onRouteChange={this.onRouteChange} />
+            ? <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
+            : <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
           )
         }
       </div>
