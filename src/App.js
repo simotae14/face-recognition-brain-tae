@@ -82,6 +82,13 @@ class App extends Component {
     };
   };
 
+  // fetch data from root API
+  componentDidMount() {
+    fetch('http://localhost:8080/')
+      .then(response => response.json())
+      .then(console.log)
+  }
+
   /* function that calculates the location of the face */
   calculateFaceLocations = (data) => {
     const regionsDetected = data.outputs[0].data.regions;
