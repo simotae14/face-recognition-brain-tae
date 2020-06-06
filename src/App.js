@@ -145,7 +145,31 @@ class App extends Component {
 
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
       // response structure https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
-      .then(response => this.displayFaceBoxes(this.calculateFaceLocations(response)))
+      .then(response => {
+        if (response) {
+          fetch('http://localhost:8080/image', {
+            method: 'PUT',
+            headers: {
+              'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+              id: this.state.user.id
+            })
+          })
+            .then(response => response.json())
+            .then(count => {
+              // old way
+              //this.setState(Object.assign(this.state.user, { entries: count }))
+              this.setState({
+                user: {
+                  ...this.state.user,
+                  entries: count
+                }
+              });
+            });
+        }
+        this.displayFaceBoxes(this.calculateFaceLocations(response))
+      })
       .catch(err => console.log(err));
   }
 
