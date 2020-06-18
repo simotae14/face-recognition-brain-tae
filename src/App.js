@@ -69,24 +69,25 @@ const app = new Clarifai.App({
   apiKey: process.env.REACT_APP_CLARIFAY_KEY
 });
 
+const initialState = {
+  input: '',
+  imageUrl: '',
+  boxes: [],
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+};
 class App extends Component {
   /* define the state */
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      boxes: [],
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
-    };
+    this.state = initialState
   };
 
   // fetch data from root API
@@ -166,7 +167,8 @@ class App extends Component {
                   entries: count
                 }
               });
-            });
+            })
+            .catch(console.log);
         }
         this.displayFaceBoxes(this.calculateFaceLocations(response))
       })
@@ -176,9 +178,7 @@ class App extends Component {
   // change route
   onRouteChange = ( route ) => {
     if (route === 'signout') {
-      this.setState({
-        isSignedIn: false
-      });
+      this.setState(initialState);
     } else if (route === 'home') {
       this.setState({
         isSignedIn: true
@@ -191,14 +191,14 @@ class App extends Component {
 
   // handler to update the user when logged in
   loadUser = data => {
-    
+
     this.setState({
       user: {
         id: data.id,
         name: data.name,
         email: data.email,
         entries: data.entries,
-        joined: data.joined        
+        joined: data.joined
       }
     })
   }
