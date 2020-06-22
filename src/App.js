@@ -88,7 +88,7 @@ class App extends Component {
 
   // fetch data from root API
   componentDidMount() {
-    fetch('http://localhost:8080/')
+    fetch('https://smartbrain-tae-api.herokuapp.com/')
       .then(response => response.json())
       .then(console.log)
   }
@@ -137,7 +137,7 @@ class App extends Component {
       imageUrl: this.state.input
     })
     // send image input url to receive the clarifai response
-    fetch('http://localhost:8080/imageurl', {
+    fetch('https://smartbrain-tae-api.herokuapp.com/imageurl', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json'
@@ -149,7 +149,7 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       if (response) {
-        fetch('http://localhost:8080/image', {
+        fetch('https://smartbrain-tae-api.herokuapp.com/image', {
           method: 'PUT',
           headers: {
             'Content-type': 'application/json'

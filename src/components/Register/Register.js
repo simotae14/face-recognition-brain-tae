@@ -26,7 +26,7 @@ class Register extends Component {
   }
 
   onSubmitRegister = () => {
-    fetch('http://localhost:8080/register', {
+    fetch('https://smartbrain-tae-api.herokuapp.com/register', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json'
